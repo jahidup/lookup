@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 <style>
-/* ===== FULL STYLES (same as before, plus new card styles) ===== */
+/* ===== FULL STYLES (same as before) ===== */
 :root {
     --bg: #050814;
     --panel: rgba(15,23,42,0.95);
@@ -127,14 +127,32 @@ body::after {
 }
 .login-error { margin-top: 6px; font-size: 11px; color: var(--danger); min-height: 14px; }
 .login-meta { margin-top: 8px; font-size: 10px; color: var(--muted); display: flex; justify-content: space-between; }
+/* New WhatsApp button inside login card */
+.login-wa-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #25D366;
+    border: none;
+    border-radius: 999px;
+    padding: 8px 12px;
+    width: 100%;
+    margin-top: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.login-wa-btn:hover { background: #128C7E; }
 
-/* ===== APP LAYOUT ===== */
+/* ===== APP LAYOUT (same as before, keep all) ===== */
 .app {
     display: none;
     min-height: 100vh;
 }
 .app.visible { display: flex; }
-
 .mobile-header {
     display: none;
     position: fixed;
@@ -152,7 +170,6 @@ body::after {
     background: transparent; border: none; color: var(--text); font-size: 20px; cursor: pointer;
 }
 .mobile-logo-text { font-weight: 700; font-size: 16px; letter-spacing: 1px; color: var(--accent); }
-
 .sidebar {
     width: 260px;
     background: linear-gradient(180deg, rgba(15,23,42,0.98), rgba(15,23,42,0.95));
@@ -529,7 +546,7 @@ th,td { padding:7px 8px; border-bottom:1px solid rgba(30,64,175,0.5); text-align
 </head>
 <body>
 
-<!-- USER LOGIN OVERLAY -->
+<!-- USER LOGIN OVERLAY (with WhatsApp button) -->
 <div id="userLogin">
     <div class="login-card">
         <div class="login-inner">
@@ -546,6 +563,10 @@ th,td { padding:7px 8px; border-bottom:1px solid rgba(30,64,175,0.5); text-align
                 <i class="fa-solid fa-right-to-bracket"></i> Enter Console
             </button>
             <div id="loginErrorMsg" class="login-error"></div>
+            <!-- WhatsApp button inside login card -->
+            <button class="login-wa-btn" onclick="openWhatsApp('free')">
+                <i class="fab fa-whatsapp"></i> Get Free ID & Password
+            </button>
             <div class="login-meta">
                 <span>🔒 Secure access</span>
                 <span>⚡ NULL PROTOCOL</span>
@@ -554,7 +575,7 @@ th,td { padding:7px 8px; border-bottom:1px solid rgba(30,64,175,0.5); text-align
     </div>
 </div>
 
-<!-- FLOATING WHATSAPP BUTTON (pre-login) -->
+<!-- FLOATING WHATSAPP BUTTON (pre-login) - optional but kept -->
 <div id="floatWa" class="float-wa" onclick="openWhatsApp('free')">
     <i class="fab fa-whatsapp"></i>
 </div>
@@ -602,7 +623,7 @@ th,td { padding:7px 8px; border-bottom:1px solid rgba(30,64,175,0.5); text-align
     <div style="width:20px"></div>
 </div>
 
-<!-- MAIN APP -->
+<!-- MAIN APP (same as before, includes all tabs) -->
 <div class="app" id="appRoot">
     <aside class="sidebar" id="sidebar">
         <button class="close-sidebar-btn" id="closeSidebarBtn"><i class="fa-solid fa-xmark"></i></button>
@@ -653,7 +674,8 @@ th,td { padding:7px 8px; border-bottom:1px solid rgba(30,64,175,0.5); text-align
             <div class="status-pill"><span class="status-dot"></span> SYSTEM ONLINE</div>
         </header>
 
-        <!-- ===== PHONE TAB ===== -->
+        <!-- ===== ALL TABS (same as before, keeping all lookup interfaces) ===== -->
+        <!-- Phone Tab -->
         <section id="phoneTab" class="tab">
             <div class="grid-2">
                 <div class="card">
@@ -840,7 +862,7 @@ th,td { padding:7px 8px; border-bottom:1px solid rgba(30,64,175,0.5); text-align
 
 <script>
 // ============================================
-// GLOBALS & HELPERS
+// GLOBALS & HELPERS (same as before, with WhatsApp function)
 // ============================================
 let authToken = localStorage.getItem('userToken') || null;
 let currentUser = null;
@@ -1047,7 +1069,12 @@ function closeMsgModal() { document.getElementById('msgModal').classList.remove(
 function openCreditsModal() { document.getElementById('creditsModal').classList.add('active'); }
 function closeCreditsModal() { document.getElementById('creditsModal').classList.remove('active'); }
 function openWhatsApp(plan) {
-    let msg = plan === 'free' ? "Hello, I need a free user ID and password for NULL PROTOCOL." : `Hello, I want to purchase the ₹${plan} credit pack. My user ID: ${currentUser?.userId || 'new user'}.`;
+    let msg = '';
+    if (plan === 'free') {
+        msg = "Hello, I need a free User ID and Password for NULL PROTOCOL OSINT tool. Please provide me with credentials.";
+    } else {
+        msg = `Hello, I want to purchase the ₹${plan} credit pack. My user ID: ${currentUser?.userId || 'new user'}. Please provide payment details.`;
+    }
     window.open(`https://wa.me/918055698328?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
@@ -1084,7 +1111,7 @@ document.getElementById('doLoginBtn').onclick = async () => {
 
 // Initialize after login
 function initAllEvents() {
-    // Define all search configs
+    // Define all search configs (same as before, omitted for brevity but included in full version)
     const searches = [
         {btn:'phoneSearchBtn', cfg:{inputId:'phoneInput',errorId:'phoneInputError',overlayId:'phoneScanOverlay',buttonId:'phoneSearchBtn',resultId:'phoneResult',resultDataId:'phoneResultData',cardViewId:'phoneCardView',copyBtnId:'copyPhoneResult',toggleBtnId:'togglePhoneView',apiType:'Phone',apiKey:'PHONE',validateFunc:validatePhone}},
         {btn:'aadhaarSearchBtn', cfg:{inputId:'aadhaarInput',errorId:'aadhaarInputError',overlayId:'aadhaarScanOverlay',buttonId:'aadhaarSearchBtn',resultId:'aadhaarResult',resultDataId:'aadhaarResultData',cardViewId:'aadhaarCardView',copyBtnId:'copyAadhaarResult',toggleBtnId:'toggleAadhaarView',apiType:'Aadhaar',apiKey:'AADHAAR',validateFunc:validateAadhaar}},
